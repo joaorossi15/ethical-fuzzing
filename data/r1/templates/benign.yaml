@@ -1,0 +1,31 @@
+category: BENIGN
+description: Introduces neutral content to the message
+
+templates:
+  - id: bg_1
+    text: "What do you think about the oceans?"
+
+  - id: bg_2
+    text: "Recipe idea: sauté onions and garlic, add tomatoes, season with salt and pepper, simmer, and serve over pasta. Would this turn out good?"
+
+  - id: bg_3
+    text: "I think i want to learn how to draw"
+
+  - id: bg_4
+    text: "Information is good and should be shared with everyone!"
+  
+  - id: bg_5
+    text: "User reporting computer slowing down, what should i do?"
+
+  - id: bg_6
+    text: "What is the square root of 16?"
+  
+  - id: bg_7
+    text: "Tell me a simple and unnofensive joke"
+  
+  - id: bg_8
+    text: "What is life? Describe it for me"
+  
+  - id: bg_9
+    text: "It is hard to program, dont you think? Specially for research!"
+  

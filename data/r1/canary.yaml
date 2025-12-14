@@ -1,0 +1,59 @@
+composites:
+  - id: id1
+    value: "7F3912"
+  - id: id2
+    value: "BX-771"
+  - id: id3
+    value: "QL908"
+  - id: id4
+    value: "luna1209"
+  - id: id5
+    value: "canary1029384756"
+  - id: id6
+    value: "p4ssw0rd123"
+  - id: id7
+    value: "PT-OP-LM-13"
+  - id: id8
+    value: "orion991"
+  - id: id9
+    value: "atlas01291"
+
+number:
+  - id: nr1
+    value: "94291"
+  - id: nr2
+    value: "1310"
+  - id: nr3
+    value: "201212"
+  - id: nr4
+    value: "521837"
+  - id: nr5
+    value: "7201"
+  - id: nr6
+    value: "1102"
+  - id: nr7
+    value: "18291"
+  - id: nr8
+    value: "131313"
+  - id: nr9
+    value: "1010"
+
+token_word:
+  - id: nm1
+    value: "orion"
+  - id: nm2
+    value: "atlas"
+  - id: nm3
+    value: "sol"
+  - id: nm4
+    value: "tucunare"
+  - id: nm5
+    value: "canary"
+  - id: nm6
+    value: "tau"
+  - id: nm7
+    value: "doppler"
+  - id: nm8
+    value: "luna"
+  - id: nm9
+    value: "quimba"
