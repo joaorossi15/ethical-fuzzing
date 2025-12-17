@@ -1,6 +1,7 @@
 import yaml
 import pandas as pd
 import random
+import json
 
 def parse_csv(path: str):
     try:
@@ -26,7 +27,7 @@ def parse_message_sequence(csv):
     distractor = read_yaml("data/r1/templates/distractor.yaml")
     exfiltrate = read_yaml("data/r1/templates/exfiltrate.yaml")
     task = read_yaml("data/r1/templates/task.yaml")
-    
+
     for row in csv.itertuples():
         message = row.message_sequence
         m = message.split("|")
@@ -94,9 +95,10 @@ def parse_message_sequence(csv):
                     pass
             m[i] = m[i][0]
         m = [item for e in m for item in (e if isinstance(e, list) else [e])]
-        csv.loc[row.Index, "message_sequence"] = m
+        csv.loc[row.Index, "messages"] = json.dumps(m, ensure_ascii=False)
+    return csv
 
 csv = parse_csv("data/r1/seeds.csv")
 social_eng = read_yaml("data/r1/templates/social_eng.yaml")
-parse_message_sequence(csv)
-print(csv["message_sequence"][12])
+csv = parse_message_sequence(csv)
+print(csv)
