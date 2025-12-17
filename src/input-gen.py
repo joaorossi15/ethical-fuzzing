@@ -36,58 +36,67 @@ def parse_message_sequence(csv):
             match m[i][0].lower():
                 case "confidential":
                     val = random.randint(0,2)
-                    m[i][0] = confidential[m[i][1]][val]["text"]
-                    m[i][0] = ";".join(m[i])
+                    temp_dict = {"type": "confidential", "text": confidential[m[i][1]][val]["text"], "canary_cat": m[i][1]}
+                    m[i][0] = temp_dict
                 
                 case "authority":
                     val = random.randint(0,4)
-                    m[i][0] = auth["templates"][val]["text"]
+                    temp_dict = {"type": "authority", "text": auth["templates"][val]["text"]}
+                    m[i][0] = temp_dict
                 
                 case "benign":
                     try:
                         temp = []
                         for _ in range(0,int(m[i][1])):
                             val = random.randint(0,8)
-                            temp.append(benign["templates"][val]["text"])
-                        m[i][0] = "|".join(temp)
+                            temp_dict = {"type": "benign", "text": benign["templates"][val]["text"]}
+                            temp.append(temp_dict)
+                        m[i][0] = temp
                     except:
                         val = random.randint(0,8)
-                        m[i][0] = benign["templates"][val]["text"]
+                        temp_dict = {"type": "benign", "text": benign["templates"][val]["text"]}
+                        m[i][0] = temp_dict
                 
                 case "distractor":
                     try:
                         temp = []
-                        for j in range(0,int(m[i][1])):
+                        for _ in range(0,int(m[i][1])):
                             val = random.randint(0,3)
-                            temp[j] = distractor["templates"][val]["text"]
-                        m[i][0] = "|".join(temp)
+                            temp_dict = {"type": "distractor", "text": distractor["templates"][val]["text"]}
+                            temp.append(temp_dict)
+                        m[i][0] = temp
                     except:
                         val = random.randint(0,3)
-                        m[i][0] = distractor["templates"][val]["text"]
+                        temp_dict = {"type": "distractor", "text": distractor["templates"][val]["text"]}
+                        m[i][0] = temp_dict
 
 
                 case "exfiltrate":
                     val = random.randint(0,4)
                     if row.canary_type == "number":
-                        m[i][0] = exfiltrate["template_number"][val]["text"]
+                        temp_dict = {"type": "exfiltrate", "text": exfiltrate["template_number"][val]["text"]}
+                        m[i][0] = temp_dict
                     else:
-                        m[i][0] = exfiltrate["template_basic"][val]["text"]
+                        temp_dict = {"type": "exfiltrate", "text": exfiltrate["template_basic"][val]["text"]}
+                        m[i][0] = temp_dict
                 
                 case "social_eng":
                     val = random.randint(0,4)
-                    m[i][0] = social_eng["templates"][val]["text"]
+                    temp_dict = {"type": "social_eng", "text": social_eng["templates"][val]["text"]}
+                    m[i][0] = temp_dict
                 
                 case "task":
                     val = random.randint(0,5)
-                    m[i][0] = task["templates"][val]["text"]
+                    temp_dict = {"type": "task", "text": task["templates"][val]["text"]}
+                    m[i][0] = temp_dict
                 
                 case _:
                     pass
             m[i] = m[i][0]
-        m = "|".join(m)
+        m = [item for e in m for item in (e if isinstance(e, list) else [e])]
         csv.loc[row.Index, "message_sequence"] = m
-        print(m)
 
 csv = parse_csv("data/r1/seeds.csv")
 social_eng = read_yaml("data/r1/templates/social_eng.yaml")
 parse_message_sequence(csv)
+print(csv["message_sequence"][12])
