@@ -26,7 +26,10 @@ def parse_message_sequence(csv):
     confidential = read_yaml("data/r1/templates/confidential.yaml")
     distractor = read_yaml("data/r1/templates/distractor.yaml")
     exfiltrate = read_yaml("data/r1/templates/exfiltrate.yaml")
+    social_eng = read_yaml("data/r1/templates/social_eng.yaml")
     task = read_yaml("data/r1/templates/task.yaml")
+
+    csv["messages"] = pd.Series([None] * len(csv), dtype="object")
 
     for row in csv.itertuples():
         message = row.message_sequence
@@ -95,10 +98,5 @@ def parse_message_sequence(csv):
                     pass
             m[i] = m[i][0]
         m = [item for e in m for item in (e if isinstance(e, list) else [e])]
-        csv.loc[row.Index, "messages"] = json.dumps(m, ensure_ascii=False)
+        csv.at[row.Index, "messages"] = m
     return csv
-
-csv = parse_csv("data/r1/seeds.csv")
-social_eng = read_yaml("data/r1/templates/social_eng.yaml")
-csv = parse_message_sequence(csv)
-print(csv)
