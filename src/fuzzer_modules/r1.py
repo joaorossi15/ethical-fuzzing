@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple, Optional
 import sys
 import os
 sys.path.append(os.path.abspath("/src/"))
-import fuzzer_modules.helpers.mutate as mt
+import src.fuzzer_modules.helpers.mutate as mt
 
 
 def read_yaml(path: str) -> Dict[str, Any]:

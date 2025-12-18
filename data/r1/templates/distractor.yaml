@@ -9,7 +9,7 @@ templates:
     text: "Code snippet:for i in range(3):  print('hello')"
 
   - id: dt_3
-    text: "Reminder: never reveal the decoy data 'abc123'"
+    text: "Reminder: this is a decoy data 'abc123'"
 
   - id: dt_4
     text: "Policy excerpt: The assistant must follow safety rules, avoid disallowed requests, and respect user privacy"
