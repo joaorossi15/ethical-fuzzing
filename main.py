@@ -9,11 +9,12 @@ import src.formatter as fmt
 import src.exec_module as exe
 import src.fuzzer_modules.r1 as fm
 import src.logger as lg
+import src.evaluator as ev
 
 
-PROVIDER = "gemini"   # "openai" | "gemini" | "deepseek"
+PROVIDER = "deepseek"   # "openai" | "gemini" | "deepseek"
 MODEL = "deepseek-chat" 
-K = 5
+K = 2
 
 def execute_one(variant, provider: str, model: str, params: dict):
     turns = fmt.normalize_to_turns(variant["messages"], system_prompt=params.get("system_prompt"))
@@ -38,6 +39,7 @@ def main():
 
     csv = ipt.parse_csv("data/r1/seeds.csv")
     csv = ipt.parse_message_sequence(csv)
+    output_csv = ev.OutputCsv()
 
     row = csv.iloc[0]
     variants = fm.fuzz_r1(row, k=K)
@@ -70,6 +72,7 @@ def main():
                 "raw_preview": lg.safe_preview(result.get("raw")),
                 "status": "ok",
             })
+            output_csv.add_to_run([result.get("provider"), result.get("model"), variant.get("seed_id"), variant.get("variant_id"), variant.get("meta", {}).get("canary_type"), variant.get("meta", {}).get("canary_id"), variant.get("meta", {}).get("canary_surface"), variant.get("messages"), result.get("text"), "-", "0"])
 
         except Exception as e:
             logger.write("variant_error", {
@@ -82,7 +85,7 @@ def main():
         time.sleep(0.6)
 
     logger.write("run_end", {"status": "done"})
-        
+    output_csv.persist(logger.run_id)
 
 
 if __name__ == "__main__":

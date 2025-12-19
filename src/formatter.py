@@ -19,7 +19,7 @@ class ChatTurn:
     content: str
     msg_type: str
 
-def normalize_to_turns( messages: List[Dict[str, Any]], system_prompt: Optional[str] = None,) -> List[ChatTurn]:
+def normalize_to_turns(messages: List[Dict[str, Any]], system_prompt: Optional[str] = None,) -> List[ChatTurn]:
     turns: List[ChatTurn] = []
     if system_prompt:
         turns.append(ChatTurn(role="system", content=system_prompt, msg_type="system_prompt"))
