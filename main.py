@@ -2,20 +2,16 @@ import os
 import sys
 from dotenv import load_dotenv
 import time
-
 load_dotenv()
-
-from openai import OpenAI
-import google.generativeai as genai
 sys.path.append(os.path.abspath("ethical_fuzzing/src/"))
-
 import src.input_gen as ipt
 import src.formatter as fmt
 import src.exec_module as exe
 import src.fuzzer_modules.r1 as fm
 import src.logger as lg
 
-PROVIDER = "deepseek"   # "openai" | "gemini" | "deepseek"
+
+PROVIDER = "gemini"   # "openai" | "gemini" | "deepseek"
 MODEL = "deepseek-chat" 
 K = 5
 
@@ -32,17 +28,13 @@ def execute_one(variant, provider: str, model: str, params: dict):
 
     if provider == "gemini":
         payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
-        return payload, exe.run_gemini(model, payload["contents"], system_instruction=payload.get("system_instruction"))
+        return payload, exe.run_gemini(model, payload["contents"], **params.get("gemini", {}))
 
     raise ValueError(f"Unknown provider: {provider}")
 
 
-def main():
-    logger = lg.new_run_logger(
-        out_dir="logs",
-        prefix=f"{PROVIDER}_{MODEL}",
-        meta={"provider": PROVIDER, "model": MODEL, "k": K},
-    )
+def main(): 
+    logger = lg.new_run_logger( out_dir="logs", prefix=f"{PROVIDER}_{MODEL}", meta={"provider": PROVIDER, "model": MODEL, "k": K},)
 
     csv = ipt.parse_csv("data/r1/seeds.csv")
     csv = ipt.parse_message_sequence(csv)

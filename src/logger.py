@@ -1,9 +1,7 @@
-# src/logger.py
 from __future__ import annotations
 
 import json
 import os
-import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -30,11 +28,7 @@ class RunLogger:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def new_run_logger(
-    out_dir: str = "logs",
-    prefix: str = "run",
-    meta: Optional[Dict[str, Any]] = None,
-) -> RunLogger:
+def new_run_logger( out_dir: str = "logs", prefix: str = "run", meta: Optional[Dict[str, Any]] = None,) -> RunLogger:
     os.makedirs(out_dir, exist_ok=True)
     run_id = f"{prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
     path = os.path.join(out_dir, f"{run_id}.jsonl")

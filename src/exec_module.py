@@ -1,14 +1,16 @@
 import os
-from typing import Any, Dict, Optional, Tuple
 from openai import OpenAI
-import google.generativeai as genai
+from google import genai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 client_openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 client_deepseek = OpenAI(
     api_key=os.environ.get("DEEPSEEK_API_KEY", ""),
     base_url="https://api.deepseek.com",
 )
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY", ""))
+client_gemini = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
 
 def run_openai(model: str, input_items, **params):
     resp = client_openai.responses.create(model=model, input=input_items, **params)
@@ -22,8 +24,12 @@ def run_deepseek(model: str, messages, **params):
     return {"provider": "deepseek", "model": model, "raw": resp, "text": text}
 
 
-def run_gemini(model: str, contents, system_instruction=None):
-    m = genai.GenerativeModel(model, system_instruction=system_instruction["parts"][0]["text"] if system_instruction else None)
-    resp = m.generate_content(contents)
-    text = getattr(resp, "text", "") or ""
+def run_gemini(model: str, messages, **params):
+    resp = client_gemini.models.generate_content(
+        model=model,
+        contents=messages,
+        config=params
+    )
+
+    text = getattr(resp, "text", None) or ""
     return {"provider": "gemini", "model": model, "raw": resp, "text": text}

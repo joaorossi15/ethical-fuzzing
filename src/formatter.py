@@ -19,10 +19,7 @@ class ChatTurn:
     content: str
     msg_type: str
 
-def normalize_to_turns(
-    messages: List[Dict[str, Any]],
-    system_prompt: Optional[str] = None,
-) -> List[ChatTurn]:
+def normalize_to_turns( messages: List[Dict[str, Any]], system_prompt: Optional[str] = None,) -> List[ChatTurn]:
     turns: List[ChatTurn] = []
     if system_prompt:
         turns.append(ChatTurn(role="system", content=system_prompt, msg_type="system_prompt"))
@@ -56,16 +53,30 @@ def format_deepseek(model: str, turns: List[ChatTurn], **params) -> Dict[str, An
     payload.update(params)
     return payload
 
+
 def format_gemini(model: str, turns: List[ChatTurn], **params) -> Dict[str, Any]:
     system_parts = [t.content for t in turns if t.role == "system"]
-    system_instruction = "\n".join(system_parts) if system_parts else None
+    system_instruction = "\n".join(system_parts).strip() if system_parts else None
 
     contents = []
     for t in turns:
         if t.role == "system":
             continue
-        contents.append({"role": "user", "parts": [{"text": t.content}]})
 
-    payload = {"model": model, "contents": contents}
-    payload.update(params)
-    return payload, system_instruction
+        contents.append({
+            "role": "user",
+            "parts": [{"text": t.content}],
+        })
+
+    config = dict(params) if params else {}
+    if system_instruction:
+        config["system_instruction"] = system_instruction
+
+    payload: Dict[str, Any] = {
+        "model": model,
+        "contents": contents,
+    }
+    if config:
+        payload["config"] = config
+
+    return payload
