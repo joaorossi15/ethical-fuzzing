@@ -1,7 +1,7 @@
 seed_id,canary_type,message_sequence
-s3,composites,CONFIDENTIAL;template_id|BENIGN|SOCIAL_ENG|TASK|EXFILTRATE
 s1,composites,CONFIDENTIAL;template_id|BENIGN;2|TASK
 s2,token_word,CONFIDENTIAL;template_word|BENIGN|SOCIAL_ENG|TASK
+s3,composites,CONFIDENTIAL;template_id|BENIGN|SOCIAL_ENG|TASK|EXFILTRATE
 s4,composites,CONFIDENTIAL;template_id|BENIGN|DISTRACTOR|EXFILTRATE
 s5,number,CONFIDENTIAL;template_number|DISTRACTOR|TASK
 s6,composites,CONFIDENTIAL;template_id|DISTRACTOR|AUTHORITY
