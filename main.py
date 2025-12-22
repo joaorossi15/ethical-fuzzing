@@ -12,8 +12,7 @@ import src.logger as lg
 import src.evaluator as ev
 
 
-PROVIDER = "deepseek"   # "openai" | "gemini" | "deepseek"
-MODEL = "deepseek-chat" 
+PROVIDER_MODEL = {"gemini": "gemini-3-flash-preview", "openai": "gpt-5.2", "deepseek": "deepseek-chat"}   # "openai" | "gemini" | "deepseek"
 K = 20
 
 def execute_one(variant, provider: str, model: str, params: dict):
@@ -35,58 +34,69 @@ def execute_one(variant, provider: str, model: str, params: dict):
 
 
 def main(): 
-    logger = lg.new_run_logger( out_dir="logs", prefix=f"{PROVIDER}_{MODEL}", meta={"provider": PROVIDER, "model": MODEL, "k": K},)
-
     csv = ipt.parse_csv("data/r1/seeds.csv")
     csv = ipt.parse_message_sequence(csv)
-    output_csv = ev.OutputCsv()
+    variant_cache = {}
 
     for row in csv.itertuples():
-        print(f"Executing fuzzing module for seed {row.seed_id}...")
-        variants = fm.fuzz_r1(row, k=K)
+        variant_cache[row.seed_id] = fm.fuzz_r1(row, k=K)
+        print(f"finished writing variants for {row.seed_id}")
 
-        params = {
-            "system_prompt": "You are a helpful assistant.",
-            "deepseek": {},
-            "openai": {},
-            "gemini": {},
-        }
+    params = {
+                "system_prompt": "You are a helpful assistant.",
+                "deepseek": {},
+                "openai": {},
+                "gemini": {},
+            }
+        
 
-        for _, variant in enumerate(variants, start=1):
-            logger.write("variant_start", {
-                "seed_id": variant.get("seed_id"),
-                "variant_id": variant.get("variant_id"),
-                "meta": variant.get("meta", {}),
-                "messages": variant.get("messages", []),
-            })
+    for provider, model in PROVIDER_MODEL.items():
+        output_csv = ev.OutputCsv()
+        logger = lg.new_run_logger( out_dir="logs", prefix=f"{provider}_{model}", meta={"provider": provider, "model": model, "k": K},)
 
-            try:
-                payload, result = execute_one(variant, PROVIDER, MODEL, params)
+        for row in csv.itertuples():
+            print(f"Executing fuzzing module for model {model} and seed {row.seed_id}...")
 
-                logger.write("variant_result", {
+            variants = variant_cache[row.seed_id]
+
+            for _, variant in enumerate(variants, start=1):
+                logger.write("variant_start", {
                     "seed_id": variant.get("seed_id"),
                     "variant_id": variant.get("variant_id"),
-                    "provider": result.get("provider"),
-                    "model": result.get("model"),
-                    "request": payload,
-                    "text": result.get("text"),
-                    "raw_preview": lg.safe_preview(result.get("raw")),
-                    "status": "ok",
-                })
-                output_csv.add_to_run([result.get("provider"), result.get("model"), variant.get("seed_id"), variant.get("variant_id"), variant.get("meta", {}).get("canary_type"), variant.get("meta", {}).get("canary_id"), variant.get("meta", {}).get("canary_surface"), variant.get("messages"), result.get("text"), "-", "0"])
-
-            except Exception as e:
-                logger.write("variant_error", {
-                    "seed_id": variant.get("seed_id"),
-                    "variant_id": variant.get("variant_id"),
-                    "status": "error",
-                    "error_msg": str(e),
+                    "meta": variant.get("meta", {}),
+                    "messages": variant.get("messages", []),
                 })
 
-            time.sleep(0.6)
-        print(f"Finished fuzzing for seed {row.seed_id}")
-    logger.write("run_end", {"status": "done"})
-    output_csv.persist(logger.run_id)
+                try:
+                    payload, result = execute_one(variant, provider, model, params)
+
+                    logger.write("variant_result", {
+                        "seed_id": variant.get("seed_id"),
+                        "variant_id": variant.get("variant_id"),
+                        "provider": result.get("provider"),
+                        "model": result.get("model"),
+                        "request": payload,
+                        "text": result.get("text"),
+                        "raw_preview": lg.safe_preview(result.get("raw")),
+                        "status": "ok",
+                    })
+
+                    output_csv.add_to_run([result.get("provider"), result.get("model"), variant.get("seed_id"), variant.get("variant_id"), variant.get("meta", {}).get("canary_type"), variant.get("meta", {}).get("canary_id"), variant.get("meta", {}).get("canary_surface"), variant.get("messages"), result.get("text"), "-", "0"])
+                    print(f"variant {variant["variant_id"]} finished")
+
+                except Exception as e:
+                    logger.write("variant_error", {
+                        "seed_id": variant.get("seed_id"),
+                        "variant_id": variant.get("variant_id"),
+                        "status": "error",
+                        "error_msg": str(e),
+                    })
+                    print(f"error: {str(e)}")
+                
+                time.sleep(0.6)
+            print(f"Finished fuzzing for seed {row.seed_id}")
+        logger.write("run_end", {"status": "done"})
+        output_csv.persist(logger.run_id)
 
 
 if __name__ == "__main__":
