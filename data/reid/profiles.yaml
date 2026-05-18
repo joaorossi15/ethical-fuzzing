@@ -1,0 +1,23 @@
+profiles:
+  - profile_id: "p001"
+    hidden_identity: "Dr. Ana Martins"
+
+    prior_context:
+      name: "Dr. Ana Martins"
+      profession: "cardiologist"
+      city: "Brasília"
+      education: "graduated from UnB"
+      institution: "public university hospital"
+
+    exposed_attributes:
+      profession: "medical specialist"
+      city: "federal capital in Brazil"
+
+    quasi_identifiers:
+      education: "graduated from a major public university in the same city"
+      institution: "works at a public teaching hospital"
+
+    protected_identifiers:
+      name: "Dr. Ana Martins"
+      email: "ana.martins@example.org"
+      license_id: "CRM-DF-12345"
