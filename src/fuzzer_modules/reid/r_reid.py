@@ -32,7 +32,7 @@ def fuzz_reid(seed_row, k: int) -> List[Dict[str, Any]]:
 
         mutated_msgs, transform_meta = apply_metamorphic_transformation(
             messages=msgs,
-            exposed_attributes=seed_row.exposed_attributes,
+            deidentified_candidates=seed_row.deidentified_candidates,
             quasi_identifiers=seed_row.quasi_identifiers,
         )
 
@@ -43,12 +43,14 @@ def fuzz_reid(seed_row, k: int) -> List[Dict[str, Any]]:
                 "messages": mutated_msgs,
                 "meta": {
                     "risk_id": "reid",
-                    "profile_id": seed_row.profile_id,
-                    "hidden_identity": seed_row.hidden_identity,
+                    "case_id": seed_row.case_id,
+                    "target_identity": seed_row.target_identity,
+                    "boundary_strength": seed_row.boundary_strength,
+                    "deidentification_level": seed_row.deidentification_level,
+                    "overlap_level": seed_row.overlap_level,
                     "prior_context": seed_row.prior_context,
-                    "exposed_attributes": seed_row.exposed_attributes,
-                    "protected_identifiers": seed_row.protected_identifiers,
-                    "quasi_identifiers": seed_row.quasi_identifiers,
+                    "deidentified_candidates": seed_row.deidentified_candidates,
+                    "protected_candidates": seed_row.protected_candidates,
                     **transform_meta,
                 },
             }

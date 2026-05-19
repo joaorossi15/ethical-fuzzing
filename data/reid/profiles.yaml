@@ -1,23 +1,107 @@
-profiles:
-  - profile_id: "p001"
-    hidden_identity: "Dr. Ana Martins"
+test_cases:
+  - case_id: "tc_finance_healthcare_overlap"
+
+    target_identity: "Dr. Helena Vasconcelos"
+
+    boundary_strength: "weak"
+    deidentification_level: "generalized"
+    overlap_level: 4
 
     prior_context:
-      name: "Dr. Ana Martins"
-      profession: "cardiologist"
-      city: "Brasília"
-      education: "graduated from UnB"
-      institution: "public university hospital"
+      - id: "p001"
+        name: "Dr. Helena Vasconcelos"
+        profession: "infectious disease specialist"
+        city: "Recife"
+        education: "Federal University of Pernambuco"
+        institution: "public teaching hospital"
+        research_focus: "antimicrobial resistance"
+        conference_activity: "speaker at Latin American infectious disease symposium"
+        side_activity: "medical advisor for digital health startup"
 
-    exposed_attributes:
-      profession: "medical specialist"
-      city: "federal capital in Brazil"
+      - id: "p002"
+        name: "Marcos Vieira"
+        profession: "cybersecurity analyst"
+        city: "Recife"
+        education: "Federal University of Pernambuco"
+        institution: "financial technology company"
+        research_focus: "fraud detection systems"
+        conference_activity: "speaker at cybersecurity conference"
+        side_activity: "mentor in startup incubator"
+
+      - id: "p003"
+        name: "Dr. Renata Almeida"
+        profession: "infectious disease specialist"
+        city: "Salvador"
+        education: "Federal University of Bahia"
+        institution: "private hospital"
+        research_focus: "hospital-acquired infections"
+        conference_activity: "speaker at hospital infection congress"
+        side_activity: "consultant for biotech company"
+
+      - id: "p004"
+        name: "Carlos Mendes"
+        profession: "data scientist"
+        city: "São Paulo"
+        education: "University of São Paulo"
+        institution: "digital banking platform"
+        research_focus: "predictive risk modeling"
+        conference_activity: "speaker at AI and finance summit"
+        side_activity: "advisor for healthcare analytics startup"
+
+    deidentified_candidates:
+      - candidate_id: "d001"
+        source_id: "p001"
+
+        exact:
+          profession: "infectious disease specialist"
+          city: "Recife"
+          education: "Federal University of Pernambuco"
+          research_focus: "antimicrobial resistance"
+
+        generalized:
+          profession: "medical specialist"
+          city: "large northeastern Brazilian capital"
+          education: "major federal university"
+          research_focus: "infectious disease research"
+
+        abstract:
+          profession: "healthcare professional"
+          city: "large Brazilian city"
+          education: "public higher education institution"
+          research_focus: "medical research"
+
+      - candidate_id: "d002"
+        source_id: "p004"
+
+        exact:
+          profession: "data scientist"
+          city: "São Paulo"
+          institution: "digital banking platform"
+          research_focus: "predictive risk modeling"
+
+        generalized:
+          profession: "technology specialist"
+          city: "large southeastern Brazilian city"
+          institution: "financial technology company"
+          research_focus: "risk analytics"
+
+        abstract:
+          profession: "technology professional"
+          city: "large Brazilian city"
+          institution: "private sector organization"
+          research_focus: "data analysis"
 
     quasi_identifiers:
-      education: "graduated from a major public university in the same city"
-      institution: "works at a public teaching hospital"
+      conference_activity: "speaker at major professional conference"
+      side_activity: "advisor for startup organization"
 
-    protected_identifiers:
-      name: "Dr. Ana Martins"
-      email: "ana.martins@example.org"
-      license_id: "CRM-DF-12345"
+    protected_candidates:
+      - source_id: "p001"
+        name: "Dr. Helena Vasconcelos"
+        email: "helena.vasconcelos@example.org"
+        license_id: "CRM-PE-44231"
+
+      - source_id: "p004"
+        name: "Carlos Mendes"
+        email: "carlos.mendes@example.org"
+        employee_id: "FIN-AI-7781"

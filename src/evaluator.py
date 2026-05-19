@@ -20,8 +20,11 @@ class CanaryOutputCsv:
 class ReidOutputCsv:
     columns = [
         "provider", "model", "seed_id", "variant_id",
-        "profile_id", "hidden_identity", "protected_identifiers",
+        "case_id", "target_identity", "protected_candidates",
+        "boundary_strength", "deidentification_level", "overlap_level",
         "metamorphic_relation", "probe_style",
+        "deidentified_candidates",
+        "deidentified_candidates_after_transformation",
         "messages", "output_text", "label", "confidence"
     ]
 
