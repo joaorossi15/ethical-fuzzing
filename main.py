@@ -15,6 +15,11 @@ K = 1
 PROVIDER_MODEL = {"openai": "gpt-5.2"}   # "openai" | "gemini" | "deepseek"
 
 
+def clean_meta(meta: dict) -> dict:
+    meta = dict(meta or {})
+    meta.pop("risk_id", None)
+    return meta
+
 def canary_output_row(result, variant):
     meta = variant.get("meta", {})
     return [
@@ -126,6 +131,7 @@ def main():
     for provider, model in PROVIDER_MODEL.items():
         output_csv = risk_cfg["output_csv"]()
         logger = lg.new_run_logger(
+            type=RISK,
             out_dir="logs",
             prefix=f"{risk_cfg['risk_id']}_{provider}_{model}",
             meta={
@@ -146,7 +152,7 @@ def main():
                     "risk_id": risk_cfg["risk_id"],
                     "seed_id": variant.get("seed_id"),
                     "variant_id": variant.get("variant_id"),
-                    "meta": variant.get("meta", {}),
+                    "meta": clean_meta(variant.get("meta", {})),
                     "messages": variant.get("messages", []),
                 })
 
@@ -154,6 +160,7 @@ def main():
                     payload, result = execute_one(variant, provider, model, params)
 
                     logger.write("variant_result", {
+                        "type": risk_cfg["risk_id"],
                         "risk_id": risk_cfg["risk_id"],
                         "seed_id": variant.get("seed_id"),
                         "variant_id": variant.get("variant_id"),
@@ -170,6 +177,7 @@ def main():
 
                 except Exception as e:
                     logger.write("variant_error", {
+                        "type": risk_cfg["risk_id"],
                         "risk_id": risk_cfg["risk_id"],
                         "seed_id": variant.get("seed_id"),
                         "variant_id": variant.get("variant_id"),

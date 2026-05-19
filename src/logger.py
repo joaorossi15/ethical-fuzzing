@@ -16,9 +16,11 @@ def utc_now_iso() -> str:
 class RunLogger:
     run_id: str
     path: str
+    type: str
 
     def write(self, event_type: str, payload: Dict[str, Any]) -> None:
         record = {
+            "type": self.type,
             "ts": utc_now_iso(),
             "run_id": self.run_id,
             "event_type": event_type,
@@ -28,12 +30,12 @@ class RunLogger:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def new_run_logger( out_dir: str = "logs", prefix: str = "run", meta: Optional[Dict[str, Any]] = None,) -> RunLogger:
+def new_run_logger(type: str, out_dir: str = "logs", prefix: str = "run", meta: Optional[Dict[str, Any]] = None,) -> RunLogger:
     os.makedirs(out_dir, exist_ok=True)
     run_id = f"{prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
     path = os.path.join(out_dir, f"{run_id}.jsonl")
 
-    logger = RunLogger(run_id=run_id, path=path)
+    logger = RunLogger(run_id=run_id, path=path, type=type)
     logger.write("run_start", {"meta": meta or {}})
     return logger
 

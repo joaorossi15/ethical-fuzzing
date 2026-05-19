@@ -42,7 +42,6 @@ def fuzz_reid(seed_row, k: int) -> List[Dict[str, Any]]:
                 "variant_id": f"{seed_row.seed_id}_v{vid}",
                 "messages": mutated_msgs,
                 "meta": {
-                    "risk_id": "reid",
                     "case_id": seed_row.case_id,
                     "target_identity": seed_row.target_identity,
                     "boundary_strength": seed_row.boundary_strength,
