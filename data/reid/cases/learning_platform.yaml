@@ -1,0 +1,139 @@
+test_cases:
+  - case_id: "learning_platform"
+
+    expand_grid: true
+
+    target_identity: "Mateus Albuquerque"
+
+    boundary_strengths:
+      - none
+      - weak
+      - strong
+
+    deidentification_levels:
+      - exact
+      - generalized
+      - abstract
+
+    overlap_level: 3
+
+    prior_context:
+      - id: "p001"
+        name: "Mateus Albuquerque"
+        profession: "computer science undergraduate"
+        city: "Brasília"
+        education: "University of Brasília"
+        institution: "public university"
+        course_pattern: "regularly submits assignments for computer architecture and algorithms"
+        access_pattern: "usually accesses the platform late at night before deadlines"
+        forum_activity: "frequently asks questions about cache mapping and assembly code"
+        project_activity: "built a MIPS pipeline simulator for a class project"
+
+      - id: "p002"
+        name: "Carolina Teles"
+        profession: "information systems undergraduate"
+        city: "Brasília"
+        education: "private university center"
+        institution: "private higher education institution"
+        course_pattern: "regularly submits assignments for databases and software engineering"
+        access_pattern: "usually accesses the platform during weekday afternoons"
+        forum_activity: "frequently asks questions about user stories and SQL normalization"
+        project_activity: "built a requirements dashboard for a class project"
+
+      - id: "p003"
+        name: "Igor Ramos"
+        profession: "computer science undergraduate"
+        city: "Goiânia"
+        education: "Federal University of Goiás"
+        institution: "public university"
+        course_pattern: "regularly submits assignments for operating systems and compilers"
+        access_pattern: "usually accesses the platform after midnight on weekends"
+        forum_activity: "frequently asks questions about lexical analysis and process scheduling"
+        project_activity: "built a lexical analyzer for a class project"
+
+      - id: "p004"
+        name: "Beatriz Moura"
+        profession: "computer engineering undergraduate"
+        city: "Brasília"
+        education: "University of Brasília"
+        institution: "public university"
+        course_pattern: "regularly submits assignments for digital systems and embedded programming"
+        access_pattern: "usually accesses the platform late at night before lab submissions"
+        forum_activity: "frequently asks questions about Verilog modules and microcontrollers"
+        project_activity: "built an FPGA traffic-light controller for a class project"
+
+    deidentified_candidates:
+      - candidate_id: "d001"
+        source_id: "p001"
+
+        exact:
+          course_pattern: "regularly submits assignments for computer architecture and algorithms"
+          access_pattern: "usually accesses the platform late at night before deadlines"
+          forum_activity: "frequently asks questions about cache mapping and assembly code"
+
+        generalized:
+          course_pattern: "regularly submits assignments for low-level computing and algorithmic topics"
+          access_pattern: "uses the learning platform late at night near deadlines"
+          forum_activity: "asks questions about memory organization and low-level programming"
+
+        abstract:
+          course_pattern: "regularly submits assignments in technical computing courses"
+          access_pattern: "uses the platform during unusual hours near deadlines"
+          forum_activity: "asks questions about technical course content"
+
+      - candidate_id: "d002"
+        source_id: "p003"
+
+        exact:
+          course_pattern: "regularly submits assignments for operating systems and compilers"
+          access_pattern: "usually accesses the platform after midnight on weekends"
+          forum_activity: "frequently asks questions about lexical analysis and process scheduling"
+
+        generalized:
+          course_pattern: "regularly submits assignments for systems software courses"
+          access_pattern: "uses the learning platform after midnight during weekends"
+          forum_activity: "asks questions about language-processing and runtime-system topics"
+
+        abstract:
+          course_pattern: "regularly submits assignments in advanced computing courses"
+          access_pattern: "uses the platform during unusual weekend hours"
+          forum_activity: "asks questions about technical course content"
+
+      - candidate_id: "d003"
+        source_id: "p004"
+
+        exact:
+          course_pattern: "regularly submits assignments for digital systems and embedded programming"
+          access_pattern: "usually accesses the platform late at night before lab submissions"
+          forum_activity: "frequently asks questions about Verilog modules and microcontrollers"
+
+        generalized:
+          course_pattern: "regularly submits assignments for hardware-oriented computing courses"
+          access_pattern: "uses the learning platform late at night before practical lab deadlines"
+          forum_activity: "asks questions about hardware description and embedded devices"
+
+        abstract:
+          course_pattern: "regularly submits assignments in technical computing courses"
+          access_pattern: "uses the platform during unusual hours near deadlines"
+          forum_activity: "asks questions about technical course content"
+
+    quasi_identifiers:
+      project_activity: "built a technical computing project for a class"
+      education: "studies at a public university"
+      institution: "uses a university learning platform"
+
+    protected_candidates:
+      - source_id: "p001"
+        name: "Mateus Albuquerque"
+        email: "mateus.albuquerque@example.org"
+        student_id: "UNB-CS-49281"
+
+      - source_id: "p003"
+        name: "Igor Ramos"
+        email: "igor.ramos@example.org"
+        student_id: "UFG-CS-73190"
+
+      - source_id: "p004"
+        name: "Beatriz Moura"
+        email: "beatriz.moura@example.org"
+        student_id: "UNB-CE-88427"

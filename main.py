@@ -9,10 +9,10 @@ import src.exec_module as exe
 import src.logger as lg
 import src.evaluator as ev
 
-RISK = os.environ.get("RISK", "r1") 
+RISK = os.environ.get("RISK", "reid") 
 K = 1
-# PROVIDER_MODEL = {"gemini": "gemini-3-flash-preview", "openai": "gpt-5.2", "deepseek": "deepseek-chat"}   # "openai" | "gemini" | "deepseek"enai" | "gemini" | "deepseek"
-PROVIDER_MODEL = {"openai": "gpt-5.2"}   # "openai" | "gemini" | "deepseek"
+PROVIDER_MODEL = {"gemini": "gemini-3-flash-preview", "openai": "gpt-5.2", "deepseek": "deepseek-chat"}   # "openai" | "gemini" | "deepseek"enai" | "gemini" | "deepseek"
+# PROVIDER_MODEL = {"openai": "gpt-5.2"}   # "openai" | "gemini" | "deepseek"
 
 
 def clean_meta(meta: dict) -> dict:
@@ -80,7 +80,7 @@ def load_risk_config(risk: str):
         import src.fuzzer_modules.reid.input_gen_reid as ipt_reid
         import src.fuzzer_modules.reid.r_reid as fr
 
-        rows = ipt_reid.load_reid_seeds("data/reid/profiles.yaml")
+        rows = ipt_reid.load_reid_seeds("data/reid/cases")
 
         return {
             "risk_id": "reid",

@@ -1,9 +1,13 @@
 from __future__ import annotations
-
+import os
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Any, Dict, List
 import yaml
+import copy
 
+BOUNDARY_STRENGTHS = ["none", "weak", "strong"]
+DEIDENTIFICATION_LEVELS = ["exact", "generalized", "abstract"]
 
 @dataclass
 class ReidSeedRow:
@@ -201,11 +205,83 @@ def build_seed_from_case(case: Dict[str, Any]) -> ReidSeedRow:
     )
 
 
-def load_reid_seeds(path: str) -> List[ReidSeedRow]:
-    data = read_yaml(path)
-    cases = data.get("test_cases", [])
+def expand_case_grid(case: Dict[str, Any]) -> List[Dict[str, Any]]:
+    base_case_id = str(case["case_id"])
 
-    if not isinstance(cases, list) or not cases:
+    boundary_strengths = case.get("boundary_strengths")
+    if boundary_strengths is None:
+        boundary_strengths = [case.get("boundary_strength", "strong")]
+
+    deidentification_levels = case.get("deidentification_levels")
+    if deidentification_levels is None:
+        deidentification_levels = [case.get("deidentification_level", "generalized")]
+
+    expanded_cases = []
+
+    for boundary in boundary_strengths:
+        for deid_level in deidentification_levels:
+            c = copy.deepcopy(case)
+
+            c["case_id"] = f"{base_case_id}_{boundary}_{deid_level}"
+            c["boundary_strength"] = boundary
+            c["deidentification_level"] = deid_level
+
+            overlap_levels = c.get("overlap_levels", {})
+            if isinstance(overlap_levels, dict) and deid_level in overlap_levels:
+                c["overlap_level"] = int(overlap_levels[deid_level])
+
+            expanded_cases.append(c)
+
+    return expanded_cases
+
+
+def expand_all_cases(cases: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    expanded = []
+
+    for case in cases:
+        if case.get("expand_grid", False):
+            expanded.extend(expand_case_grid(case))
+        else:
+            expanded.append(case)
+
+    return expanded
+
+
+def load_reid_seeds(path: str) -> List[ReidSeedRow]:
+    p = Path(path)
+
+    cases: List[Dict[str, Any]] = []
+
+    if p.is_file():
+        data = read_yaml(str(p))
+        file_cases = data.get("test_cases", [])
+
+        if not isinstance(file_cases, list):
+            raise ValueError(f"'test_cases' must be a list in {p}")
+
+        cases.extend(file_cases)
+
+    elif p.is_dir():
+        yaml_files = sorted(list(p.glob("*.yaml")) + list(p.glob("*.yml")))
+
+        if not yaml_files:
+            raise ValueError(f"No YAML files found in directory: {path}")
+
+        for file_path in yaml_files:
+            data = read_yaml(str(file_path))
+            file_cases = data.get("test_cases", [])
+
+            if not isinstance(file_cases, list):
+                raise ValueError(f"'test_cases' must be a list in {file_path}")
+
+            cases.extend(file_cases)
+
+    else:
+        raise FileNotFoundError(f"Path not found: {path}")
+
+    if not cases:
         raise ValueError(f"No test_cases found in {path}")
+
+    cases = expand_all_cases(cases)
 
     return [build_seed_from_case(c) for c in cases]
