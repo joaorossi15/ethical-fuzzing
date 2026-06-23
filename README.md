@@ -3,15 +3,35 @@
 This repository implements a fuzzing-based framework for evaluating **inference-time privacy risks** in deployed Large Language Models (LLMs) under **black-box conditions**.
 
 The framework operationalizes privacy risks as executable artifacts composed of:
-- structured base seeds,
-- risk-specific fuzzing strategies, and
-- explicit privacy oracles.
 
-The current prototype instantiates the **misuse and malicious use of personal data** risk using canary injection and multi-message conversational trajectories. It supports evaluation across multiple commercial LLM providers (OpenAI, Google Gemini, and DeepSeek) and records all executions for reproducible manual oracle evaluation.
+* structured seed datasets,
+* risk-specific fuzzing strategies,
+* prompt generation mechanisms, and
+* explicit privacy oracles.
 
-This repository accompanies the paper *“Fuzzing Inference-Time Privacy Risks in Deployed Large Language Models”* and provides all artifacts needed to reproduce the experiments.
+The current implementation evaluates two privacy risks:
+
+1. **Misuse and Disclosure of Personal Data**, using canary-based disclosures embedded within multi-turn conversational trajectories.
+2. **Re-identification of De-identified Information**, using domain-specific identity inference scenarios constructed from partially anonymized profiles.
+
+The framework supports evaluation across multiple commercial LLM providers (OpenAI, Google Gemini, and DeepSeek) and records all executions for reproducible oracle evaluation and analysis.
+
+This repository accompanies the paper *"Fuzzing Inference-Time Privacy Risks in Deployed Large Language Models"* and provides all artifacts required to reproduce the experiments.
 
 ## Usage
-- Create a `.env` file with the respective API keys;
-- Choose on `main.py` the providers and models to test;
-- Run `main.py` and the output will be at `outputs/{file_name}.csv`
+
+1. Create a `.env` file containing the required API keys.
+2. Select the providers and models to evaluate in `main.py`.
+3. Run:
+
+```bash
+python main.py
+```
+
+Results will be written to:
+
+```text
+outputs/{file_name}.csv
+```
+
+Execution logs are stored separately to support experiment traceability and reproduction.
