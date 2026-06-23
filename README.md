@@ -1,6 +1,6 @@
 # Overview
 
-This repository implements a fuzzing-based framework for evaluating **inference-time privacy risks** in deployed Large Language Models (LLMs) under **black-box conditions**.
+This repository implements a fuzzing-based framework for evaluating inference-time privacy risks in deployed Large Language Models (LLMs) under black-box conditions.
 
 The framework operationalizes privacy risks as executable artifacts composed of:
 
